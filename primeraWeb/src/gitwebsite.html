@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Repository Search</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
+    <script>
+
+function validateForm()
+  {
+    var x = document.forms["myForm"]["usr"].value;
+      if (x == "" || x == null) {
+        alert("Insert username");
+        return false;
+      }
+  }
+
+function on_click(){
+
+  if (validateForm() != false)
+  {
+      $("#div1").hide();
+      $("#div2").show();
+      $("#tst1").text("Github repositories of " + $("#usr").val());
+      searchRep();
+  }
+}
+
+function searchRep(){
+
+  $.get("https://api.github.com/users/"+$("#usr").val()+"/repos",function(data)
+  {
+      for(var i=0;data.length;i++)
+        {   $("#tdata").append('<tr>'+
+            '<td>'+data[i].name+'</td>'+
+            '<td>'+data[i].description+'</td>'+
+            '<td>'+data[i].stargazers_count+'</td>'
+            +'</tr>');
+        }
+  });
+}
+
+function on_ready(){
+$("button").click(on_click);
+}
+
+$(document).ready(on_ready);
+
+</script>
+</head>
+
+<body>
+<div class="container">
+    <div class="jumbotron">
+        <h1>Repository Search</h1>
+    </div>
+
+    <h2 id="tst1">Github repositories</h2>
+    <div id="div1">
+        <p>Get a table with the repositories of the selected user</p>
+        <form name="myForm" action="/action_page.php" onsubmit="return validateForm()" method="post" required>
+            <div class="form-group">
+                <label for="usr">Username:</label>
+                <input type="text" class="form-control" name="usr" id="usr">
+            </div>
+            <button type="submit" class="btn btn-default">Show table</button>
+        </form>
+    </div>
+
+    <div class="container" id="div2" hidden>
+        <br>
+        <br>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Number of followers</th>
+            </tr>
+            </thead>
+            <tbody id="tdata">
+
+            </tbody>
+        </table>
+        <div id="tda"> </div>
+    </div>
+
+</div>
+
+</body>
+</html>
